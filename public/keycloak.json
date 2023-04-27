@@ -1,0 +1,7 @@
+{
+  "realm": "scrumpokerpro",
+  "auth-server-url": "https://scrumpokerpro.com/auth",
+  "ssl-required": "external",
+  "resource": "scrumpokerpro-frontend",
+  "public-client": true
+}

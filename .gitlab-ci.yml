@@ -1,0 +1,60 @@
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ''
+  DOCKER_DRIVER: overlay2
+stages:
+  - build
+  - push
+  - deploy
+
+build:
+  stage: build
+  image: node:14.17.3
+  cache:
+    paths:
+      - node_modules
+  script:
+    - npm i
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - build/
+  only:
+    - main
+    - develop
+
+push:
+  stage: push
+  image: docker:20.10.7
+  services:
+    - name: docker:20.10.7-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_DOCKER_REGISTRY
+  script:
+    - docker build -t "$CI_DOCKER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA" .
+    - docker push "$CI_DOCKER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA"
+  only:
+    - main
+    - develop
+
+deploy:
+  stage: deploy
+  image: cnych/kustomize:v1.0
+  script:
+    - mkdir -p /root/.ssh
+    - echo "$CI_SSH_PRIVATE_KEY" > /root/.ssh/id_rsa
+    - apk add --no-cache openssh-client
+    - ssh-keyscan -H gitlab.com > /root/.ssh/known_hosts
+    - chmod 600 /root/.ssh/id_rsa
+    - git clone git@gitlab.com:scrumpokerpro/k8s-config.git
+    - git config --global user.email "gitlab@gitlab.com"
+    - git config --global user.name "GitLab CI/CD"
+    - cd k8s-config/overlays/prod
+    - kustomize edit set image $CI_DOCKER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+    - cat kustomization.yaml
+    - git commit -am '[skip ci] update scrum-poker-pro-frontend'
+    - git push origin master
+  only:
+    - main
+    - develop

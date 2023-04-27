@@ -1,0 +1,35 @@
+@font-face {
+  font-family: RaptorV3Premium;
+  src: url('RaptorV3Premium-Regular.woff2') format('woff2'),
+    url('../fonts/RaptorV3Premium-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: RaptorV3Premium;
+  src: url('RaptorV3Premium-Light.woff2') format('woff2'),
+    url('../fonts/RaptorV3Premium-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: RaptorV3Premium;
+  src: url('RaptorV3Premium-Black.woff2') format('woff2'),
+    url('../fonts/RaptorV3Premium-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: RaptorV3Premium;
+  src: url('RaptorV3Premium-Bold.woff2') format('woff2'),
+    url('../fonts/RaptorV3Premium-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: auto;
+}
